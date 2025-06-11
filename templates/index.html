@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ترتيب الكلمات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .word-button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 1.2rem;
+        }
+        #answer {
+            min-height: 50px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body class="container my-5 text-center">
+
+    <h1 class="mb-4">رتب الكلمات</h1>
+
+    <h4>السؤال:</h4>
+    <p class="lead">{{ reference }}</p>
+
+    <div id="words" class="d-flex flex-wrap justify-content-center my-3">
+        {% for word in words %}
+            <button class="btn btn-primary word-button" onclick="addWord(this)">{{ word }}</button>
+        {% endfor %}
+    </div>
+
+    <div id="answer" class="border rounded p-3 mb-3 bg-light fw-bold"></div>
+
+    <form method="POST" action="/submit">
+        <input type="hidden" name="user_answer" id="user_answer">
+        <input type="hidden" name="correct_answer" value="{{ correct_answer }}">
+        <input type="hidden" name="game_type" value="{{ game_type }}">
+        <button type="submit" class="btn btn-success">تحقق من الإجابة</button>
+    </form>
+
+    <button onclick="clearAnswer()" class="btn btn-danger mt-3">مسح</button>
+
+    <script>
+        let answerBox = document.getElementById('answer');
+        let userAnswerInput = document.getElementById('user_answer');
+
+        function addWord(button) {
+            const word = button.textContent;
+            answerBox.innerHTML += word + ' ';
+            button.disabled = true;
+            updateInput();
+        }
+
+        function clearAnswer() {
+            answerBox.innerHTML = '';
+            userAnswerInput.value = '';
+            let buttons = document.querySelectorAll('.word-button');
+            buttons.forEach(button => button.disabled = false);
+        }
+
+        function updateInput() {
+            userAnswerInput.value = answerBox.textContent.trim();
+        }
+    </script>
+
+</body>
+</html>
